@@ -1,43 +1,63 @@
 [
   {
+    "file": "otf/LibronCyrillic-Bold.otf",
+    "sha256": "58847cece0cd48c6b135660223aa420894872c8f8b0a500ee8f44b0414b668cf",
+    "bytes": 483928
+  },
+  {
+    "file": "otf/LibronCyrillic-BoldItalic.otf",
+    "sha256": "1f4a42b21fab5ce22c56b3c3e829e86166a5bc76f2baedf43118bf4210ed3604",
+    "bytes": 541668
+  },
+  {
+    "file": "otf/LibronCyrillic-Italic.otf",
+    "sha256": "6a81fca4ca123b1615b60d133997530317eda2cea55903ae348483fd38ad948b",
+    "bytes": 541972
+  },
+  {
+    "file": "otf/LibronCyrillic-Regular.otf",
+    "sha256": "ccf1867770a6c4ffccfb9fc6e6f4c2999682a61393c3c31ee3c87819788dd46a",
+    "bytes": 487872
+  },
+  {
     "file": "ttf/LibronCyrillic-Bold.ttf",
-    "sha256": "0fe6362b62ea7ae8fb193843cb31a35a4f90674170d8f609b464c606c86c9ba1",
+    "sha256": "c376f922c91bb3c38bd8fdb3b9466e9e7a2953476378d6a4606d3e9b7987bb06",
     "bytes": 284692
   },
   {
     "file": "ttf/LibronCyrillic-BoldItalic.ttf",
-    "sha256": "1ad5d5747cbdc7e7b0814730c3a05a51436c42e56c33866ff6e0cce3106970b4",
-    "bytes": 289616
+    "sha256": "baddd71bf9cb2889f6824c13807f69ed38cd1af3caefcfc3a5a3ab9ea38fb4a0",
+    "bytes": 288320
   },
   {
     "file": "ttf/LibronCyrillic-Italic.ttf",
-    "sha256": "3eaa53693bef90dcd830df2a13bb3030d9efb2c551ad164d6e32cb85740ab88f",
+    "sha256": "08934d140ef78633d5842dc83d12af20f8fc4ff7b36fd78262d200b4d5653597",
     "bytes": 282024
   },
   {
     "file": "ttf/LibronCyrillic-Regular.ttf",
-    "sha256": "7a9dd68e36c83f487127576731cac2d95aa9509b5fad7eb58f193ccc8790a649",
+    "sha256": "f568f5f7ccfc47f6648b63ffbb462cf04216fe53b6e4dfc2db753f950d31f75a",
     "bytes": 262892
   },
   {
     "file": "web/LibronCyrillic-Bold.woff2",
-    "sha256": "80e5623ba136fe4d42d1463980b3b5830484a23411aa2a481f59668996608a46",
-    "bytes": 105540
+    "sha256": "73d7964ccb64ee3d230b8b1f8c64c83f9ea508584311e435cc6bc286b10bbe1d",
+    "bytes": 105808
   },
   {
     "file": "web/LibronCyrillic-BoldItalic.woff2",
-    "sha256": "b1a0a548ddb49d118a693f6ecad92ca5ab1f7a54d108747d081253eae8fb322f",
-    "bytes": 111468
+    "sha256": "594e2b11fd48a3b21b3a56615bace11705afc35fcf645ff65fadec74b96fdacb",
+    "bytes": 110424
   },
   {
     "file": "web/LibronCyrillic-Italic.woff2",
-    "sha256": "a6f6c984973a2b48a0afdef1183b7f6d86e836e5c37fe18ab5a7d40c1e63fd2b",
-    "bytes": 106452
+    "sha256": "211b9baeff8aafbd313e434f15d6bcde6c07023d3b7f24bfa696bf933b5b8e87",
+    "bytes": 106556
   },
   {
     "file": "web/LibronCyrillic-Regular.woff2",
-    "sha256": "4f0ff6a133d9a0ea021dbe2901567017ff465d62174fe0ec3077c3943bf4e66c",
-    "bytes": 102984
+    "sha256": "80f44c5304e5ac4bda53266b2abb16224d58152bce6ce5da2da5fd827d3ffb7a",
+    "bytes": 103016
   },
   {
     "file": "web/libron-cyrillic.css",
