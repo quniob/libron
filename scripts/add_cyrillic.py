@@ -85,7 +85,13 @@ def accent(font, cp, base_cp, mark_cp, cfg):
     x = next((p[2] for p in base.anchorPoints if p[0]=='Anchor-0'), base.width/2)
     if not capital:
         x = base.width/2 + cfg['base_slope']*font['o'].boundingBox()[3]/2
-    g.addReference(mark, (1, 0, 0, 1, x, 0))
+    dy = 0
+    if cp in (0x0419, 0x0439):
+        # Keep the short-I breve clear of the letter, including heavy italics.
+        gap = font.em * (0.10 if capital else 0.06)
+        dy = round(base.boundingBox()[3] + gap - font[mark].boundingBox()[1])
+        x += cfg['base_slope'] * dy
+    g.addReference(mark, (1, 0, 0, 1, x, dy))
     g.width = base.width
     g.anchorPoints = tuple(p for p in base.anchorPoints if p[0] != 'Anchor-0')
     return g

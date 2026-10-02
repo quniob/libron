@@ -1,4 +1,4 @@
-# Libron Cyrillic 0.26
+# Libron Cyrillic 0.27
 
 Неофициальная кириллическая адаптация Libron 0.25.
 

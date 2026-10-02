@@ -3,6 +3,7 @@
 from pathlib import Path
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
+from fontTools.pens.recordingPen import DecomposingRecordingPen, RecordingPen
 import ctypes as C
 import ctypes.util
 import json
@@ -43,6 +44,23 @@ def shape(path,text,features=()):
     for kind,item in [('buffer',bu),('font',fo),('face',fa),('blob',bl)]:getattr(hb,'hb_'+kind+'_destroy')(item)
     return result
 
+def breve_clearance(glyphs,glyph_name):
+    drawing=DecomposingRecordingPen(glyphs)
+    glyphs[glyph_name].draw(drawing)
+    contours=[];part=[]
+    for operation,arguments in drawing.value:
+        part.append((operation,arguments))
+        if operation in ('closePath','endPath'):
+            pen=BoundsPen(glyphs);recording=RecordingPen();recording.value=part
+            recording.replay(pen)
+            if pen.bounds is not None:contours.append(pen.bounds)
+            part=[]
+    assert len(contours)>=2,(glyph_name,'missing body or breve')
+    mark=max(contours,key=lambda bounds:bounds[1])
+    body_top=max(bounds[3] for bounds in contours if bounds is not mark)
+    return mark[1]-body_top
+
+
 def validate_font(path,style,weight,italic,format_name):
     f=TTFont(path);cmap=f.getBestCmap();assert REQUIRED<=set(cmap)
     if format_name=='otf':
@@ -51,6 +69,11 @@ def validate_font(path,style,weight,italic,format_name):
     else:
         assert 'glyf' in f and 'CFF ' not in f
     gs=f.getGlyphSet()
+    breve_gaps={name:breve_clearance(gs,name) for name in ('uni0419','uni0439','uni0419.sc')}
+    em=f['head'].unitsPerEm
+    for glyph,target in [('uni0419',0.10),('uni0439',0.06)]:
+        assert abs(breve_gaps[glyph]-em*target)<=2,(path,glyph,breve_gaps[glyph])
+    assert breve_gaps['uni0419.sc']>=em*0.05,(path,'smallcap breve clearance')
     for cp in REQUIRED:
         pen=BoundsPen(gs);gs[cmap[cp]].draw(pen);assert pen.bounds is not None,(style,hex(cp))
         bounds=pen.bounds;assert bounds[3]<=f['hhea'].ascent and bounds[1]>=f['hhea'].descent,(style,hex(cp),bounds)
@@ -78,7 +101,7 @@ def validate_font(path,style,weight,italic,format_name):
     kerned=sum(r[1] for r in shape(path,'АТ ТА АУ УА ЛА ГА То'))
     unkerned=sum(r[1] for r in shape(path,'АТ ТА АУ УА ЛА ГА То',['kern=0']))
     assert kerned!=unkerned,(style,'kerning inactive')
-    result={'style':style,'weight':weight,'glyphs':f['maxp'].numGlyphs,'unicode_characters':len(cmap),'coverage_checks':len(REQUIRED),'kerning_delta':kerned-unkerned,'accent_position':stress[1][2:]}
+    result={'style':style,'weight':weight,'glyphs':f['maxp'].numGlyphs,'unicode_characters':len(cmap),'coverage_checks':len(REQUIRED),'kerning_delta':kerned-unkerned,'accent_position':stress[1][2:],'short_i_breve_gaps':breve_gaps}
     f.close()
     return result
 

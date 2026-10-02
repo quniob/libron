@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.27 — short-I breve spacing
+
+- Raise the breve over Cyrillic Й and й in all four styles, including small caps.
+- Keep the breve on the italic axis when moving it upward.
+- Preserve the letter outlines, advances, kerning and other accents.
+- Check the separation between the breve and the letter in both TTF and CFF OTF builds.
+
 ## v0.26 — unofficial Cyrillic fork
 
 - Add four OpenType CFF OTF fonts with PostScript hinting, including a Kindle installation guide.
