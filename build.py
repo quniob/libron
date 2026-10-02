@@ -58,7 +58,7 @@ with open(os.path.join(ROOT_DIR, "VERSION")) as version_file:
 with open(os.path.join(ROOT_DIR, "COPYRIGHT")) as copyright_file:
     COPYRIGHT_TEXT = copyright_file.read().strip()
 
-DEFAULT_FAMILY = "Libron"
+DEFAULT_FAMILY = "LibronCyrillic"
 
 # (style_suffix, source_sfd, embolden_method)
 # All styles are exported as-is from their respective SFD masters.
@@ -226,7 +226,13 @@ def ff_remove_overlaps_script():
     return textwrap.dedent(
         """\
         f.selection.all()
+        # New Cyrillic small caps already have Skia pathops cleanup. Running
+        # FontForge's Boolean pass again is unstable at their tight joins.
+        for glyph in f.glyphs():
+            if glyph.glyphname.startswith('uni04') and glyph.glyphname.endswith('.sc'):
+                f.selection.select(('less',), glyph.glyphname)
         f.removeOverlap()
+        f.selection.all()
         f.correctDirection()
         count = sum(1 for g in f.glyphs() if g.isWorthOutputting())
         print(f"  Removed overlaps and corrected direction for {count} glyphs")
@@ -339,6 +345,7 @@ def ff_rename_script():
         f"""\
         if 'FAMILY' not in dir():
             FAMILY = {DEFAULT_FAMILY!r}
+        DISPLAY_FAMILY = 'Libron Cyrillic' if FAMILY == 'LibronCyrillic' else FAMILY
 
         STYLE_MAP = {style_map}
 
@@ -349,8 +356,8 @@ def ff_rename_script():
         )
 
         f.fontname = f"{{FAMILY}}-{{style_suffix}}"
-        f.familyname = FAMILY
-        f.fullname = f"{{FAMILY}} {{style_display}}"
+        f.familyname = DISPLAY_FAMILY
+        f.fullname = f"{{DISPLAY_FAMILY}} {{style_display}}"
         f.weight = ps_weight
         f.os2_weight = os2_weight
 
@@ -364,11 +371,11 @@ def ff_rename_script():
             f.macstyle = macstyle
 
         lang = 'English (US)'
-        f.appendSFNTName(lang, 'Family', FAMILY)
+        f.appendSFNTName(lang, 'Family', DISPLAY_FAMILY)
         f.appendSFNTName(lang, 'SubFamily', style_display)
-        f.appendSFNTName(lang, 'Fullname', f"{{FAMILY}} {{style_display}}")
+        f.appendSFNTName(lang, 'Fullname', f"{{DISPLAY_FAMILY}} {{style_display}}")
         f.appendSFNTName(lang, 'PostScriptName', f"{{FAMILY}}-{{style_suffix}}")
-        f.appendSFNTName(lang, 'Preferred Family', FAMILY)
+        f.appendSFNTName(lang, 'Preferred Family', DISPLAY_FAMILY)
         f.appendSFNTName(lang, 'Preferred Styles', style_display)
         f.appendSFNTName(lang, 'Compatible Full', f"{{FAMILY}} {{style_display}}")
         f.appendSFNTName(lang, 'UniqueID', f"{{FAMILY}} {{style_display}}")

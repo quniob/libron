@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.26 — unofficial Cyrillic fork
+
+- Add 100 Cyrillic Unicode characters across Regular, Italic, Bold and Bold Italic.
+- Reuse matching Libron outlines and adapt distinct Cyrillic forms from Literata.
+- Add Cyrillic kerning, combining acute placement and synthetic small caps.
+- Use the family name **Libron Cyrillic** to avoid clashes with upstream Libron.
+- Include installable TTF, WOFF2, specimens, a local preview and reproducible inputs.
+- Preserve SIL OFL 1.1 and all upstream copyright notices.
+
+This is an independent adaptation, not an official upstream release. Bulgarian
+and Serbian localized `locl` forms and physical E Ink testing are not included.
+
 ## v0.25
 
 ### Small caps

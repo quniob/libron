@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "styles": [
+    {
+      "style": "Regular",
+      "weight": 400,
+      "glyphs": 1253,
+      "unicode_characters": 831,
+      "coverage_checks": 102,
+      "kerning_delta": -1586,
+      "accent_position": [
+        -606,
+        79
+      ]
+    },
+    {
+      "style": "Italic",
+      "weight": 400,
+      "glyphs": 1252,
+      "unicode_characters": 831,
+      "coverage_checks": 102,
+      "kerning_delta": -1431,
+      "accent_position": [
+        -575,
+        74
+      ]
+    },
+    {
+      "style": "Bold",
+      "weight": 700,
+      "glyphs": 1252,
+      "unicode_characters": 831,
+      "coverage_checks": 102,
+      "kerning_delta": -1541,
+      "accent_position": [
+        -613,
+        79
+      ]
+    },
+    {
+      "style": "BoldItalic",
+      "weight": 700,
+      "glyphs": 1252,
+      "unicode_characters": 831,
+      "coverage_checks": 102,
+      "kerning_delta": -1444,
+      "accent_position": [
+        -612,
+        76
+      ]
+    }
+  ]
+}

@@ -1,124 +1,36 @@
-name: Build fonts
+name: Build Libron Cyrillic
 
 on:
   push:
     branches: [main, develop]
-    tags: ["*"]
+    tags: ["cyrillic-v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/nicoverbruggen/fntbld-oci:latest
-
     steps:
       - uses: actions/checkout@v5
-
       - name: Build fonts
-        run: python3 build.py --with-kobofix
-
-      - name: Validate generated fonts with ots-sanitize
+        run: python3 build.py
+      - name: Check Cyrillic shaping and coverage
+        run: python3 scripts/validate_cyrillic.py
+      - name: Validate OpenType tables
         run: |
-          for font in out/ttf/*.ttf out/kf/*.ttf out/web/*.woff2; do
-            echo "Validating ${font}"
-            ots-sanitize "${font}"
+          for font in out/ttf/*.ttf out/web/*.woff2; do
+            ots-sanitize "$font"
           done
-
-      - name: Upload artifact
+      - name: Upload fonts
         uses: actions/upload-artifact@v6
         with:
-          name: Libron
-          path: out/ttf/*.ttf
-
-      - name: Upload Kobo artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: KF_Libron
-          path: out/kf/*.ttf
-
-      - name: Upload Web artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: Libron_Web
-          path: out/web/*.woff2
-
-      - name: Zip fonts for release
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          cd out/ttf && zip -j ../../Libron.zip *.ttf
-          cd ../../out/kf && zip -j ../../KF_Libron.zip *.ttf
-          cd ../../out/web && zip -j ../../Libron_Web.zip *.woff2
-
-      - name: Upload release zips
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v6
-        with:
-          name: Libron-release
+          name: Libron-Cyrillic
           path: |
-            Libron.zip
-            KF_Libron.zip
-            Libron_Web.zip
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - uses: actions/download-artifact@v6
-        with:
-          name: Libron-release
-
-      - name: Assemble release notes
-        run: |
-          {
-            echo 'RELEASE_BODY<<__RELEASE_EOF__'
-            # Notes under the first "## " heading in CHANGELOG.md.
-            awk 'f && /^## /{exit} /^## /{f=1; next} f{print}' CHANGELOG.md
-            cat <<'EOF'
-
-          ### Downloads
-
-          - **If you are using a Kobo device**, download [KF_Libron.zip](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/KF_Libron.zip). It has been processed with `kobo-font-fix` for improved compatibility with Kobo's `kepub` renderer.
-          - **If you are using a Kindle, another e-reader or a desktop computer**, download [Libron.zip](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/Libron.zip).
-          - **If you are using CrossPoint Reader**, Libron for the Xteink X3 and X4 devices is published as `cpfont` files in [ebook-fonts](https://github.com/nicoverbruggen/ebook-fonts).
-          - **If you want to use Libron on a website**, download [Libron_Web.zip](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/Libron_Web.zip).
-
-          ### Learn more
-
-          Libron is a modified version of Readerly with a calmer, more neutral appearance intended for reading books. For more information about the font and how it was built, please consult the [README](${{ github.server_url }}/${{ github.repository }}/blob/main/README.md).
-
-          ### License
-
-          Libron is available under the [SIL Open Font License](${{ github.server_url }}/${{ github.repository }}/blob/main/LICENSE) and may be embedded in digital books.
-          EOF
-            echo '__RELEASE_EOF__'
-          } >> "$GITHUB_ENV"
-
-      - name: Determine pre-release
-        run: |
-          # Pre-release unless this tag's commit is reachable from main.
-          if git fetch --no-tags --quiet origin main 2>/dev/null \
-             && git merge-base --is-ancestor HEAD FETCH_HEAD; then
-            echo "PRERELEASE=false" >> "$GITHUB_ENV"
-          else
-            echo "PRERELEASE=true" >> "$GITHUB_ENV"
-          fi
-
-      - name: Create release
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: false
-          prerelease: ${{ env.PRERELEASE }}
-          name: ${{ github.ref_name }}
-          body: ${{ env.RELEASE_BODY }}
-          files: |
-            Libron.zip
-            KF_Libron.zip
-            Libron_Web.zip
+            out/ttf/*.ttf
+            out/web/*.woff2
+          if-no-files-found: error

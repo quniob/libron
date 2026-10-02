@@ -1,46 +1,102 @@
-# <img src="./icon.png" width=20px> Libron
+# Libron Cyrillic
 
-**Libron** is a modified version of [Readerly](https://github.com/nicoverbruggen/readerly) with various edits to give the font a more neutral look. 
+An unofficial Cyrillic adaptation of [Libron](https://github.com/nicoverbruggen/libron)
+0.25, published as a fork by [quniob](https://github.com/quniob). Matching letterforms
+reuse Libron's own outlines; distinct Cyrillic forms are adapted from
+[Literata](https://github.com/googlefonts/literata) to fit Libron's height, width,
+stroke weight, spacing and italic slant.
 
-The original font was imported and has been manually edited using [FontForge](https://fontforge.org). All modified source files are available in the `src` directory.
+[Русская документация](README-RU.md) · [Download the complete package](dist/Libron-Cyrillic-0.26.zip)
 
-## Specimen
+![Libron Cyrillic reading specimen](specimens/reading.png)
 
-<img src="./specimen.svg" width=400px>
+## Install
 
-## General changes
+Install the four files in [fonts/ttf](fonts/ttf). The font family appears as
+**Libron Cyrillic** and includes Regular, Italic, Bold and Bold Italic.
+It can coexist with the original Libron.
 
-Libron started as an attempt to make Readerly feel a little more appropriate for reading on e-readers. Some of the more expressive details that are part of Readerly stood out more than I wanted.
+- Windows: select the TTF files, right-click and choose **Install**.
+- macOS: open the TTF files in **Font Book** and choose **Install**.
+- Linux: copy them to `~/.local/share/fonts/LibronCyrillic/`, then run `fc-cache -f`.
+- Reading apps: import all four TTF files through the app's font settings.
 
-In particular, some of the serifs and capital forms seemed too distracting as I was reading.
+## Coverage
 
-What started as a few tweaks to the serifs to make the different font files a little more neutral has gradually developed into a broader reworking of Readerly's design:
+- 100 added characters: U+0400–U+045F, Ґ/ґ and Ѣ/ѣ.
+- Full Russian alphabet, including Ё/ё, plus Ukrainian and Belarusian characters.
+- Cyrillic kerning, mixed Latin/Cyrillic text and combining acute U+0301: за́мок, замо́к.
+- Synthetic Cyrillic small caps through `smcp` and `c2sc`, following upstream Libron.
+- Original Latin, digits, punctuation and the № sign retained.
 
-- Many uppercase and lowercase letters, figures and punctuation marks have now been redrawn or refined across all four styles. 
-- Spacing and kerning have been adjusted alongside the outlines to create a more even reading texture.
-- Accented characters have been rebuilt where necessary, so that they remain consistent with their base glyphs.
-- Synthetic small caps were added to the font, based on scaled down capitals for each four styles.
+This covers the basic Cyrillic block rather than every Cyrillic Extended range.
+Dedicated Bulgarian and Serbian localized `locl` forms were not designed.
+The adaptation has not received a professional node-by-node type-design review
+or been tested on a physical E Ink device.
 
-The result keeps Readerly's proportions and overall character, but has a calmer and more neutral appearance intended specifically for reading books. As such, it is a successor to Readerly.
+## Preview and webfonts
 
-## Building Libron
+Open [preview.html](preview.html) locally to try your own text, sizes, styles and
+small caps. It does not send text anywhere. If the browser blocks local fonts,
+install the TTF files or serve the repository with `python3 -m http.server 8000`.
 
-### Automatic builds
+Use the four [WOFF2 fonts](fonts/web) with the included CSS:
 
-When a commit of Libron is tagged, a version is automatically released. The version number set in [VERSION](./VERSION) is used when building the font, and is embedded within the font.
+```html
+<link rel="stylesheet" href="fonts/web/libron-cyrillic.css">
+```
 
-The following variants are generated:
+```css
+body { font-family: "Libron Cyrillic", serif; }
+```
 
-- Libron for desktop (`TTF`)
-- Libron for [Kobo devices](https://github.com/nicoverbruggen/kobo-font-fix) (`KF TTF`)
-- Libron's webfont variant (`WOFF2`) 
+## Build
 
-Libron for devices running CrossPoint Reader (`cpfont`) is built and published in [ebook-fonts](https://github.com/nicoverbruggen/ebook-fonts).
+The repository includes the edited FontForge masters in `src/`, the unmodified
+Libron inputs in `cyrillic/base/`, fixed Literata instances and the transformation
+parameters in `cyrillic/config.json`. See [provenance](cyrillic/PROVENANCE.json)
+for the exact source commits and instance parameters.
 
-### Building locally
+Build the committed SFD masters using upstream's builder image:
 
-You can run `./local-build.sh` if you have Podman installed to build the definitive fonts. If you have all dependencies installed locally, you can also use `./build.py` to build the font with Python.
+```bash
+podman run --rm -v "$PWD":/work -w /work \
+  ghcr.io/nicoverbruggen/fntbld-oci:latest python3 build.py
+```
 
-## License
+To regenerate the Cyrillic masters first:
 
-This font is available under the [OFL license](./LICENSE).
+```bash
+podman run --rm -v "$PWD":/work -w /work \
+  ghcr.io/nicoverbruggen/fntbld-oci:latest python3 scripts/add_cyrillic.py
+```
+
+The build exports `out/ttf/` and `out/web/`. `build.py --with-kobofix` additionally
+creates Kobo variants; the committed downloadable package contains standard TTF
+and WOFF2 files.
+
+## Validation
+
+All four TTF files pass OpenType Sanitizer. The shaping checks cover Unicode
+coverage, visible outlines, vertical clipping, style linking, kerning, combining
+acute placement, small caps and TTF/WOFF2 character-map parity using HarfBuzz.
+The latest results are in [fonts/validation.json](fonts/validation.json).
+
+```bash
+python3 scripts/validate_cyrillic.py
+```
+
+Run the check inside the builder image or an environment with FontTools, Brotli
+and the HarfBuzz shared library. CI rebuilds and validates the fonts.
+
+## License and attribution
+
+The font software remains under the **SIL Open Font License 1.1**. See [LICENSE](LICENSE),
+[COPYRIGHT](COPYRIGHT) and [Literata's license](cyrillic/OFL-Literata.txt).
+Upstream authors are credited for their work; this fork does not imply their
+endorsement.
+
+- [Newsreader](https://github.com/productiontype/Newsreader): the Newsreader Project Authors.
+- [Readerly](https://github.com/nicoverbruggen/readerly) and
+  [Libron](https://github.com/nicoverbruggen/libron): Nico Verbruggen.
+- [Literata](https://github.com/googlefonts/literata): the Literata Project Authors.

@@ -1,0 +1,47 @@
+[
+  {
+    "file": "ttf/LibronCyrillic-Bold.ttf",
+    "sha256": "0fe6362b62ea7ae8fb193843cb31a35a4f90674170d8f609b464c606c86c9ba1",
+    "bytes": 284692
+  },
+  {
+    "file": "ttf/LibronCyrillic-BoldItalic.ttf",
+    "sha256": "1ad5d5747cbdc7e7b0814730c3a05a51436c42e56c33866ff6e0cce3106970b4",
+    "bytes": 289616
+  },
+  {
+    "file": "ttf/LibronCyrillic-Italic.ttf",
+    "sha256": "3eaa53693bef90dcd830df2a13bb3030d9efb2c551ad164d6e32cb85740ab88f",
+    "bytes": 282024
+  },
+  {
+    "file": "ttf/LibronCyrillic-Regular.ttf",
+    "sha256": "7a9dd68e36c83f487127576731cac2d95aa9509b5fad7eb58f193ccc8790a649",
+    "bytes": 262892
+  },
+  {
+    "file": "web/LibronCyrillic-Bold.woff2",
+    "sha256": "80e5623ba136fe4d42d1463980b3b5830484a23411aa2a481f59668996608a46",
+    "bytes": 105540
+  },
+  {
+    "file": "web/LibronCyrillic-BoldItalic.woff2",
+    "sha256": "b1a0a548ddb49d118a693f6ecad92ca5ab1f7a54d108747d081253eae8fb322f",
+    "bytes": 111468
+  },
+  {
+    "file": "web/LibronCyrillic-Italic.woff2",
+    "sha256": "a6f6c984973a2b48a0afdef1183b7f6d86e836e5c37fe18ab5a7d40c1e63fd2b",
+    "bytes": 106452
+  },
+  {
+    "file": "web/LibronCyrillic-Regular.woff2",
+    "sha256": "4f0ff6a133d9a0ea021dbe2901567017ff465d62174fe0ec3077c3943bf4e66c",
+    "bytes": 102984
+  },
+  {
+    "file": "web/libron-cyrillic.css",
+    "sha256": "7d1822259f70db5be1f0109b49a45417a7b24d317fe9ad70688c94ca59376016",
+    "bytes": 675
+  }
+]
