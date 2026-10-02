@@ -58,7 +58,13 @@ def validate_font(path,style,weight,italic,format_name):
     assert bool(f['OS/2'].fsSelection&1)==italic
     assert f['name'].getDebugName(1)=='Libron Cyrillic'
     assert f['name'].getDebugName(16)=='Libron Cyrillic'
-    assert f['name'].getDebugName(5)=='Version '+(ROOT/'VERSION').read_text().strip()
+    version=(ROOT/'VERSION').read_text().strip()
+    # ttfautohint appends its version after a semicolon in TrueType name ID 5.
+    expected_version='Version '+version
+    for record in f['name'].names:
+        if record.nameID==5:
+            assert record.toUnicode().split(';',1)[0]==expected_version,(path,record.toUnicode())
+    assert abs(f['head'].fontRevision-float(version))<1/65536,(path,'fontRevision')
     assert ' ' not in f['name'].getDebugName(6)
     assert 'Literata' in f['name'].getDebugName(0)
     assert f['OS/2'].ulUnicodeRange1&(1<<9)
