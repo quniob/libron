@@ -43,6 +43,7 @@ import subprocess
 import sys
 import textwrap
 from typing import Optional
+from scripts.unpack_sources import unpack_sources
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -594,6 +595,7 @@ def main():
     print("  Libron Build")
     print("=" * 60)
 
+    unpack_sources(ROOT_DIR)
     require_fonttools()
     require_ttfautohint()
     ff_cmd = find_fontforge()

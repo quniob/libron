@@ -6,7 +6,7 @@ reuse Libron's own outlines; distinct Cyrillic forms are adapted from
 [Literata](https://github.com/googlefonts/literata) to fit Libron's height, width,
 stroke weight, spacing and italic slant.
 
-[Русская документация](README-RU.md) · [Download the complete package](dist/Libron-Cyrillic-0.26.zip)
+[Русская документация](README-RU.md) · [Download the TTF fonts](fonts/ttf)
 
 ![Libron Cyrillic reading specimen](specimens/reading.png)
 
@@ -52,12 +52,17 @@ body { font-family: "Libron Cyrillic", serif; }
 
 ## Build
 
-The repository includes the edited FontForge masters in `src/`, the unmodified
+The repository includes the edited FontForge masters, losslessly compressed as
+`src/*.sfd.xz`, and the unmodified
 Libron inputs in `cyrillic/base/`, fixed Literata instances and the transformation
 parameters in `cyrillic/config.json`. See [provenance](cyrillic/PROVENANCE.json)
 for the exact source commits and instance parameters.
 
-Build the committed SFD masters using upstream's builder image:
+`build.py` automatically unpacks the masters before building. To unpack them for
+editing, run `python3 scripts/unpack_sources.py`. Regenerated or manually edited
+`.sfd` files take precedence over the compressed masters.
+
+Build the committed masters using upstream's builder image:
 
 ```bash
 podman run --rm -v "$PWD":/work -w /work \
@@ -72,7 +77,7 @@ podman run --rm -v "$PWD":/work -w /work \
 ```
 
 The build exports `out/ttf/` and `out/web/`. `build.py --with-kobofix` additionally
-creates Kobo variants; the committed downloadable package contains standard TTF
+creates Kobo variants; the committed `fonts/` directory contains standard TTF
 and WOFF2 files.
 
 ## Validation
@@ -100,3 +105,4 @@ endorsement.
 - [Readerly](https://github.com/nicoverbruggen/readerly) and
   [Libron](https://github.com/nicoverbruggen/libron): Nico Verbruggen.
 - [Literata](https://github.com/googlefonts/literata): the Literata Project Authors.
+

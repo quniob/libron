@@ -65,7 +65,10 @@ body { font-family: "Libron Cyrillic", serif; }
 
 ## Исходники и повторная сборка
 
-`src/` содержит изменённые FontForge SFD. `cyrillic/base/`
+`src/*.sfd.xz` содержит изменённые FontForge SFD, сжатые без потерь.
+Сборка автоматически распаковывает их; для редактирования выполните
+`python3 scripts/unpack_sources.py`. Уже распакованные и изменённые SFD
+имеют приоритет перед архивами. `cyrillic/base/`
 содержит исходные мастера Libron, а `cyrillic/Literata-*.ttf` —
 зафиксированные статические экземпляры Literata, используемые адаптацией.
 Параметры преобразования находятся в `cyrillic/config.json`.
