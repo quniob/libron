@@ -50,6 +50,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(ROOT_DIR, "src")
 OUT_DIR = os.path.join(ROOT_DIR, "out")
 OUT_TTF_DIR = os.path.join(OUT_DIR, "ttf")
+OUT_OTF_DIR = os.path.join(OUT_DIR, "otf")
 OUT_KF_DIR = os.path.join(OUT_DIR, "kf")
 OUT_WEB_DIR = os.path.join(OUT_DIR, "web")
 
@@ -410,17 +411,20 @@ def ff_license_script():
     )
 
 
-def build_export_script(sfd_path, ttf_path):
+def build_export_script(sfd_path, output_paths):
     return textwrap.dedent(
         f"""\
         import fontforge
 
-        f = fontforge.open({sfd_path!r})
-        print('Exporting: ' + f.fontname)
         flags = ('opentype', 'no-FFTM-table')
-        f.generate({ttf_path!r}, flags=flags)
-        print('  -> ' + {ttf_path!r})
-        f.close()
+        for output_path in {output_paths!r}:
+            f = fontforge.open({sfd_path!r})
+            print('Exporting: ' + f.fontname)
+            if output_path.endswith('.otf'):
+                f.autoHint()
+            f.generate(output_path, flags=flags)
+            print('  -> ' + output_path)
+            f.close()
         """
     )
 
@@ -692,16 +696,19 @@ def build(tmp_dir, family=DEFAULT_FAMILY, outline_fix=True, with_kobofix=False):
         )
         run_fontforge_script(script)
 
-    print("\n-- Step 3: Export TTFs --\n")
+    print("\n-- Step 3: Export TTF and OpenType CFF fonts --\n")
     os.makedirs(OUT_TTF_DIR, exist_ok=True)
+    os.makedirs(OUT_OTF_DIR, exist_ok=True)
 
     for name, style, _source_path, _embolden in variants:
         sfd_path = os.path.join(tmp_dir, f"{name}.sfd")
         ttf_path = os.path.join(OUT_TTF_DIR, f"{name}.ttf")
-        script = build_export_script(sfd_path, ttf_path)
+        otf_path = os.path.join(OUT_OTF_DIR, f"{name}.otf")
+        script = build_export_script(sfd_path, (ttf_path, otf_path))
         run_fontforge_script(script)
-        fix_ttf_style_flags(ttf_path, style)
-        fix_ttf_version_names(ttf_path)
+        for font_path in (ttf_path, otf_path):
+            fix_ttf_style_flags(font_path, style)
+            fix_ttf_version_names(font_path)
         autohint_ttf(ttf_path)
 
     if with_kobofix:
@@ -720,6 +727,7 @@ def build(tmp_dir, family=DEFAULT_FAMILY, outline_fix=True, with_kobofix=False):
     print("\n" + "=" * 60)
     print("  Build complete!")
     print(f"  TTF fonts are in:  {OUT_TTF_DIR}/")
+    print(f"  OTF fonts are in:  {OUT_OTF_DIR}/")
     print(f"  KF fonts are in:   {OUT_KF_DIR}/")
     print(f"  Web fonts are in:  {OUT_WEB_DIR}/")
     print("=" * 60)

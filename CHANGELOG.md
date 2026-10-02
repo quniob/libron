@@ -2,6 +2,11 @@
 
 ## v0.26 — unofficial Cyrillic fork
 
+- Add four OpenType CFF OTF fonts with PostScript hinting, including a Kindle installation guide.
+- Build TTF, OTF and WOFF2 using GitHub Actions on input changes, pull requests, tags and manual dispatch.
+- Validate all formats with OpenType Sanitizer and compare Cyrillic shaping, coverage and advances.
+- Upload a complete font ZIP with OFL notices, a preview, specimens, checksums and validation results.
+
 - Add 100 Cyrillic Unicode characters across Regular, Italic, Bold and Bold Italic.
 - Reuse matching Libron outlines and adapt distinct Cyrillic forms from Literata.
 - Add Cyrillic kerning, combining acute placement and synthetic small caps.

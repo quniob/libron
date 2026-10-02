@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check Unicode, style linking, font shaping, marks and webfont parity."""
+"""Check TTF/CFF OTF coverage, style linking, shaping, marks and webfont parity."""
 from pathlib import Path
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
@@ -43,9 +43,13 @@ def shape(path,text,features=()):
     for kind,item in [('buffer',bu),('font',fo),('face',fa),('blob',bl)]:getattr(hb,'hb_'+kind+'_destroy')(item)
     return result
 
-results=[]
-for style,(weight,italic) in STYLES.items():
-    path=ROOT/'out/ttf'/f'LibronCyrillic-{style}.ttf';f=TTFont(path);cmap=f.getBestCmap();assert REQUIRED<=set(cmap)
+def validate_font(path,style,weight,italic,format_name):
+    f=TTFont(path);cmap=f.getBestCmap();assert REQUIRED<=set(cmap)
+    if format_name=='otf':
+        assert f.sfntVersion=='OTTO' and 'CFF ' in f and 'glyf' not in f
+        assert f['CFF '].cff.fontNames==[f['name'].getDebugName(6)]
+    else:
+        assert 'glyf' in f and 'CFF ' not in f
     gs=f.getGlyphSet()
     for cp in REQUIRED:
         pen=BoundsPen(gs);gs[cmap[cp]].draw(pen);assert pen.bounds is not None,(style,hex(cp))
@@ -54,6 +58,7 @@ for style,(weight,italic) in STYLES.items():
     assert bool(f['OS/2'].fsSelection&1)==italic
     assert f['name'].getDebugName(1)=='Libron Cyrillic'
     assert f['name'].getDebugName(16)=='Libron Cyrillic'
+    assert f['name'].getDebugName(5)=='Version '+(ROOT/'VERSION').read_text().strip()
     assert ' ' not in f['name'].getDebugName(6)
     assert 'Literata' in f['name'].getDebugName(0)
     assert f['OS/2'].ulUnicodeRange1&(1<<9)
@@ -67,6 +72,18 @@ for style,(weight,italic) in STYLES.items():
     kerned=sum(r[1] for r in shape(path,'АТ ТА АУ УА ЛА ГА То'))
     unkerned=sum(r[1] for r in shape(path,'АТ ТА АУ УА ЛА ГА То',['kern=0']))
     assert kerned!=unkerned,(style,'kerning inactive')
-    web=TTFont(ROOT/'out/web'/f'LibronCyrillic-{style}.woff2');assert web.getBestCmap()==cmap
-    results.append({'style':style,'weight':weight,'glyphs':f['maxp'].numGlyphs,'unicode_characters':len(cmap),'coverage_checks':len(REQUIRED),'kerning_delta':kerned-unkerned,'accent_position':stress[1][2:]})
-print(json.dumps({'status':'passed','styles':results},ensure_ascii=False,indent=2))
+    result={'style':style,'weight':weight,'glyphs':f['maxp'].numGlyphs,'unicode_characters':len(cmap),'coverage_checks':len(REQUIRED),'kerning_delta':kerned-unkerned,'accent_position':stress[1][2:]}
+    f.close()
+    return result
+
+results={format_name:[] for format_name in ['ttf','otf']}
+for style,(weight,italic) in STYLES.items():
+    for format_name in results:
+        path=ROOT/'out'/format_name/f'LibronCyrillic-{style}.{format_name}'
+        results[format_name].append(validate_font(path,style,weight,italic,format_name))
+    with TTFont(ROOT/'out/ttf'/f'LibronCyrillic-{style}.ttf') as ttf, TTFont(ROOT/'out/otf'/f'LibronCyrillic-{style}.otf') as otf, TTFont(ROOT/'out/web'/f'LibronCyrillic-{style}.woff2') as web:
+        assert web.getBestCmap()==ttf.getBestCmap()
+        assert set(otf.getBestCmap())==set(ttf.getBestCmap())
+        for cp,glyph in ttf.getBestCmap().items():
+            assert ttf['hmtx'][glyph][0]==otf['hmtx'][otf.getBestCmap()[cp]][0],(style,hex(cp),'advance mismatch')
+print(json.dumps({'status':'passed','formats':results,'webfont_parity':'passed'},ensure_ascii=False,indent=2))

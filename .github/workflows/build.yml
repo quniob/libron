@@ -2,35 +2,62 @@ name: Build Libron Cyrillic
 
 on:
   push:
-    branches: [main, develop]
+    branches: ["**"]
     tags: ["cyrillic-v*"]
+    paths:
+      - "build.py"
+      - "src/**"
+      - "cyrillic/**"
+      - "scripts/**"
+      - ".github/workflows/**"
+      - "VERSION"
+      - "COPYRIGHT"
+      - "LICENSE"
+      - "README*"
+      - "preview.html"
+      - "specimens/**"
+      - "fonts/web/*.css"
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     container:
       image: ghcr.io/nicoverbruggen/fntbld-oci:latest
     steps:
       - uses: actions/checkout@v5
-      - name: Build fonts
+        with:
+          persist-credentials: false
+      - name: Build TTF, OTF and WOFF2
         run: python3 build.py
       - name: Check Cyrillic shaping and coverage
-        run: python3 scripts/validate_cyrillic.py
+        run: |
+          python3 scripts/validate_cyrillic.py > out/validation.json
+          cat out/validation.json
       - name: Validate OpenType tables
         run: |
-          for font in out/ttf/*.ttf out/web/*.woff2; do
+          for font in out/ttf/*.ttf out/otf/*.otf out/web/*.woff2; do
             ots-sanitize "$font"
           done
-      - name: Upload fonts
+      - name: Package fonts, licenses and checksums
+        id: package
+        run: |
+          python3 scripts/package_fonts.py
+          echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+      - name: Upload font package
         uses: actions/upload-artifact@v6
         with:
-          name: Libron-Cyrillic
-          path: |
-            out/ttf/*.ttf
-            out/web/*.woff2
+          name: Libron-Cyrillic-${{ steps.package.outputs.version }}
+          path: out/Libron-Cyrillic-*.zip
           if-no-files-found: error
+          retention-days: 90
+          compression-level: 0

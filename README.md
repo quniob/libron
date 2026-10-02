@@ -6,7 +6,7 @@ reuse Libron's own outlines; distinct Cyrillic forms are adapted from
 [Literata](https://github.com/googlefonts/literata) to fit Libron's height, width,
 stroke weight, spacing and italic slant.
 
-[Русская документация](README-RU.md) · [Download the TTF fonts](fonts/ttf)
+[Русская документация](README-RU.md) · [TTF](fonts/ttf) · [OTF](fonts/otf) · [Builds and ZIP packages](https://github.com/quniob/libron/actions/workflows/build.yml)
 
 ![Libron Cyrillic reading specimen](specimens/reading.png)
 
@@ -15,6 +15,11 @@ stroke weight, spacing and italic slant.
 Install the four files in [fonts/ttf](fonts/ttf). The font family appears as
 **Libron Cyrillic** and includes Regular, Italic, Bold and Bold Italic.
 It can coexist with the original Libron.
+
+The four [OTF files](fonts/otf) contain OpenType CFF outlines and PostScript
+hinting. For Kindle, copy all four OTF files directly into the device's `fonts`
+folder, eject the device, and choose **Libron Cyrillic** in the book's Aa menu.
+Install one complete set, either OTF or TTF, to avoid duplicate family entries.
 
 - Windows: select the TTF files, right-click and choose **Install**.
 - macOS: open the TTF files in **Font Book** and choose **Install**.
@@ -76,15 +81,25 @@ podman run --rm -v "$PWD":/work -w /work \
   ghcr.io/nicoverbruggen/fntbld-oci:latest python3 scripts/add_cyrillic.py
 ```
 
-The build exports `out/ttf/` and `out/web/`. `build.py --with-kobofix` additionally
-creates Kobo variants; the committed `fonts/` directory contains standard TTF
+The build exports `out/ttf/`, `out/otf/` and `out/web/`. `build.py --with-kobofix` additionally
+creates Kobo variants; the committed `fonts/` directory contains TTF, OTF
 and WOFF2 files.
+
+GitHub Actions builds on pushes affecting build inputs, pull requests and
+`cyrillic-v*` tags. You can also use **Run workflow** on the
+[Build Libron Cyrillic](https://github.com/quniob/libron/actions/workflows/build.yml)
+page. Each successful run uploads a ZIP artifact containing all twelve fonts,
+the local preview, specimens, licenses, validation results and SHA-256 checksums.
+The artifact contains fonts and documentation; source masters remain in the
+repository. Artifacts are retained for 90 days.
 
 ## Validation
 
-All four TTF files pass OpenType Sanitizer. The shaping checks cover Unicode
+The build validates all four TTF, four CFF OTF and four WOFF2 files using OpenType
+Sanitizer. The shaping checks cover Unicode
 coverage, visible outlines, vertical clipping, style linking, kerning, combining
-acute placement, small caps and TTF/WOFF2 character-map parity using HarfBuzz.
+acute placement, small caps, TTF/OTF advance parity and TTF/WOFF2 character-map
+parity using HarfBuzz. OTF checks also verify the CFF format and PostScript names.
 The latest results are in [fonts/validation.json](fonts/validation.json).
 
 ```bash
@@ -105,4 +120,3 @@ endorsement.
 - [Readerly](https://github.com/nicoverbruggen/readerly) and
   [Libron](https://github.com/nicoverbruggen/libron): Nico Verbruggen.
 - [Literata](https://github.com/googlefonts/literata): the Literata Project Authors.
-
