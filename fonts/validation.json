@@ -12,7 +12,12 @@
         "accent_position": [
           -606,
           79
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 200,
+          "uni0439": 120,
+          "uni0419.sc": 124
+        }
       },
       {
         "style": "Italic",
@@ -24,7 +29,12 @@
         "accent_position": [
           -575,
           74
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 200,
+          "uni0439": 120,
+          "uni0419.sc": 136
+        }
       },
       {
         "style": "Bold",
@@ -36,7 +46,12 @@
         "accent_position": [
           -613,
           79
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 200.0,
+          "uni0439": 120.0,
+          "uni0419.sc": 115
+        }
       },
       {
         "style": "BoldItalic",
@@ -48,7 +63,12 @@
         "accent_position": [
           -612,
           76
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 200,
+          "uni0439": 120,
+          "uni0419.sc": 120
+        }
       }
     ],
     "otf": [
@@ -62,7 +82,12 @@
         "accent_position": [
           -606,
           79
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 199.6787109375,
+          "uni0439": 119.8740234375,
+          "uni0419.sc": 124
+        }
       },
       {
         "style": "Italic",
@@ -74,7 +99,12 @@
         "accent_position": [
           -575,
           74
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 199.6787109375,
+          "uni0439": 120.3486328125,
+          "uni0419.sc": 136
+        }
       },
       {
         "style": "Bold",
@@ -86,7 +116,12 @@
         "accent_position": [
           -613,
           79
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 199.6787109375,
+          "uni0439": 119.6572265625,
+          "uni0419.sc": 115
+        }
       },
       {
         "style": "BoldItalic",
@@ -98,7 +133,12 @@
         "accent_position": [
           -612,
           76
-        ]
+        ],
+        "short_i_breve_gaps": {
+          "uni0419": 199.6787109375,
+          "uni0439": 119.98828125,
+          "uni0419.sc": 120
+        }
       }
     ]
   },
